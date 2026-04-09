@@ -1,3 +1,4 @@
+from langchain_core.messages import AIMessage
 from state import AgentState
 from skills.registry import load_skills
 from utils.utils import chunk_documents
@@ -22,4 +23,4 @@ def pdf_agent(state: AgentState):
         "history": state.get("messages", [])
     })
 
-    return {"result": result}
+    return {"result": result, "messages": [AIMessage(content=result)]}

@@ -1,4 +1,6 @@
 from langgraph.graph import StateGraph
+from langgraph.checkpoint.memory import InMemorySaver
+from langchain_core.messages import AIMessage
 from agents.pdf_agent import pdf_agent
 from agents.command_agent import command_agent
 from state import AgentState
@@ -55,7 +57,10 @@ def buid_graph():
 
     graph_builder.add_node("pdf_agent", pdf_agent)
     graph_builder.add_node("command_agent", command_agent)
-    graph_builder.add_node("unknown_agent", lambda state: {"result": "❌ Sorry, I don’t understand this request. Please try again with a clearer instruction."})
+    graph_builder.add_node("unknown_agent", lambda state: {
+        "result": "❌ Sorry, I don't understand this request. Please try again with a clearer instruction.",
+        "messages": [AIMessage(content="❌ Sorry, I don't understand this request. Please try again with a clearer instruction.")]
+    })
 
     graph_builder.set_entry_point("router")
     graph_builder.add_conditional_edges(
@@ -68,4 +73,4 @@ def buid_graph():
         }
     )
 
-    return graph_builder.compile()
+    return graph_builder.compile(checkpointer=InMemorySaver())

@@ -1,3 +1,4 @@
+from langchain_core.messages import AIMessage
 from state import AgentState
 from skills.registry import load_skills
 from utils.utils import is_command_safe, extract_command
@@ -14,8 +15,9 @@ def command_agent(state: AgentState):
     cmd = extract_command(state["task"])
 
     if not is_command_safe(cmd):
-        return {"result": "❌ Sorry, this command is not allowed for safety reasons."}
+        msg = "❌ Sorry, this command is not allowed for safety reasons."
+        return {"result": msg, "messages": [AIMessage(content=msg)]}
 
     result = skill.run({"command": cmd})
 
-    return {"result": result}
+    return {"result": result, "messages": [AIMessage(content=result)]}

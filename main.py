@@ -1,43 +1,21 @@
 from dotenv import load_dotenv
 load_dotenv()
 
-from langchain_core.messages import HumanMessage, AIMessage
+from langchain_core.messages import HumanMessage
 
 from graph import buid_graph
 from sandbox.sandbox import app
 
 graph = buid_graph()
-
-class Memory:
-    def __init__(self):
-        self.history = []
-
-    def add(self, user_input: str, result: str):
-        self.history.append(HumanMessage(content=user_input))
-        self.history.append(AIMessage(content=result))
-
-    def get(self):
-        return self.history
-    
-    def last(self, k=4):
-        return self.history[-k:]
-    
-    def print(self):
-        print("\n--- Conversation History ---")
-        for msg in self.history:
-            print(msg)
-        print("----------------------------\n")
-
-memory = Memory()
+config = {"configurable": {"thread_id": "1"}}
 
 def run_task(task: str):
     result = graph.invoke({
-        "messages": memory.get(),
+        "messages": [HumanMessage(content=task)],
         "task": task,
         "result": ""  
-    })
+    }, config)
     
-    memory.add(task, result.get("result", ""))
     return result.get("result", "")
 
 @app.local_entrypoint()

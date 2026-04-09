@@ -1,16 +1,11 @@
-import os
 from langgraph.graph import StateGraph
 from agents.pdf_agent import pdf_agent
 from agents.command_agent import command_agent
 from state import AgentState
-from langchain_openai import ChatOpenAI
+from core.llm import get_llm
 
 db = None
-llm = ChatOpenAI(
-    model="gpt-4o-mini",
-    temperature=0.7,
-    api_key=os.getenv("OPENAI_API_KEY")
-)
+llm = get_llm(temperature=0.7)
 
 def router(state: AgentState):
     task = state.get("task")

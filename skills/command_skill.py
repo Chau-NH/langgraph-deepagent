@@ -1,17 +1,11 @@
-import os
-
-from langchain_openai import ChatOpenAI
 from deepagents import create_deep_agent
 from langchain.tools import tool
 from skills.base import Skill
 from tools.command import execute_command
+from core.llm import get_llm    
 
 
-llm = ChatOpenAI(
-    model="gpt-3.5-turbo",
-    temperature=0,
-    api_key=os.getenv("OPENAI_API_KEY")
-)
+llm = get_llm(temperature=0)
 
 @tool(description="Executes a shell command and returns the output.")
 def run_command(command: str):

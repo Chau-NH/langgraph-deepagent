@@ -1,11 +1,6 @@
-from langchain_openai import ChatOpenAI
-import os
+from core.llm import get_llm
 
-llm = ChatOpenAI(
-    model="gpt-3.5-turbo",
-    temperature=0.7,
-    api_key=os.getenv("OPENAI_API_KEY")
-)
+llm = get_llm(temperature=0.7)
 
 def ask_pdf(vector_store, question, history=None):
     docs = vector_store.similarity_search(question, k=3)
